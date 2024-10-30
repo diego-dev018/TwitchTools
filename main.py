@@ -1,9 +1,11 @@
-from vod import save_vod
+from vod import vod_main
 from keys import keys_main
+from datetime import datetime
+from extra_functions import get_db_dir
 
 
 def main():
-    HEADERS = keys_main()
+    get_db_dir()
     options = [
         'GUARDAR VODS EN LOCAL',
         'EDITAR CLIPS'
@@ -12,7 +14,7 @@ def main():
         print(f'{n+1}) {option}')
     ans = input('> ')
     if ans == '1':
-        pass
+        vod_main()
     elif ans == '2':
         pass
     else:
@@ -20,4 +22,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f'\nSALIDA: {datetime.now()}')

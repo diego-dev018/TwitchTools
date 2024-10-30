@@ -1,4 +1,5 @@
-from os import path
+from os import path, remove
+from sys import exit
 import requests
 import pickle as pkl
 
@@ -28,10 +29,16 @@ def get_accestoken(CLIENT_ID: str, SECRET_ID: str):
     }
     response = requests.post(url, data=payload)
     # response.json()['acces_token']
-    return get_headers(CLIENT_ID, response.json()['access_token'])
+    try:
+        return response.json()['access_token']
+    except KeyError:
+        print('\nERROR EN LAS CLAVES. ESTAS SON INCORRECTAS O NO EXISTEN!')
+        remove(name_file)
+        exit()
 
 
-def get_headers(CLIENT_ID: str, AUTORIZATION: str):
+def get_headers(CLIENT_ID: str, CLIENT_SECRET: str):
+    AUTORIZATION = get_accestoken(CLIENT_ID, CLIENT_SECRET)
     return {
         'Client-ID': CLIENT_ID,
         'Authorization': f'Bearer {AUTORIZATION}'
@@ -43,10 +50,16 @@ def keys_main():
         keys = save_keys()
     else:
         keys = get_keys()
-    headers = get_accestoken(keys['CLIENT_ID'], keys['SECRET_ID'])
-    return headers
+    HEADERS = get_headers(keys['CLIENT_ID'], keys['SECRET_ID'])
+    return HEADERS
     
 
 
 if __name__ == '__main__':
-    print(keys_main())
+    if keys_main():
+        print('Claves obtenidas con EXITO!')
+        if input('Mostrar claves? (s/n) > ').lower() == 's':
+            print(keys_main())
+    else:
+        print('Error al obtener las claves!')
+    # {'Client-ID': 'rjonnkgfz...', 'Authorization': 'Bearer s6t53l5o...'}

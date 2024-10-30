@@ -1,10 +1,11 @@
-from os import path, mkdir
+from os import path, system
 from pickle import dump, load
+from sys import platform
 
-DB_DIRNAME = 'DB'
-FILES_DIR = {
-    'DB_VODS': path.join(DB_DIRNAME, 'vods.pkl'),
-}
+
+def cleaner_screen():
+    system('cls' if platform == 'win32' else 'clear')
+
 
 def get_file(name_file: str):
     with open(name_file, 'rb') as f:
@@ -18,10 +19,5 @@ def save_file(name_file: str, data: list):
         dump(data, f)
 
 
-def get_db_dir():
-    if not path.exists(DB_DIRNAME):
-        mkdir(DB_DIRNAME)
-
-
 if __name__ == '__main__':
-    get_db_dir()
+    pass

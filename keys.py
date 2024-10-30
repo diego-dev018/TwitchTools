@@ -1,10 +1,12 @@
 from os import path, remove
 from sys import exit
+from extra_functions import get_file as get_keys
+from file_dirs import get_db_file
 import requests
 import pickle as pkl
 
 
-name_file = 'keys.pkl'
+name_file = get_db_file('keys')
 
 
 def save_keys():
@@ -13,11 +15,6 @@ def save_keys():
     with open(name_file, 'wb') as f:
         pkl.dump({'CLIENT_ID': CLIENT_ID, 'SECRET_ID': SECRET_ID}, f)
     return {'CLIENT_ID': CLIENT_ID, 'SECRET_ID': SECRET_ID}
-
-
-def get_keys():
-    with open(name_file, 'rb') as f:
-        return pkl.load(f)
     
     
 def get_accestoken(CLIENT_ID: str, SECRET_ID: str):
@@ -49,7 +46,7 @@ def keys_main():
     if not path.exists(name_file):
         keys = save_keys()
     else:
-        keys = get_keys()
+        keys = get_keys(name_file)
     HEADERS = get_headers(keys['CLIENT_ID'], keys['SECRET_ID'])
     return HEADERS
     

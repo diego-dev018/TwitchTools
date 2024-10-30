@@ -1,11 +1,9 @@
 from vod import vod_main
 from keys import keys_main
 from datetime import datetime
-from extra_functions import get_db_dir
 
 
 def main():
-    get_db_dir()
     options = [
         'GUARDAR VODS EN LOCAL',
         'EDITAR CLIPS'

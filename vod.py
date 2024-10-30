@@ -1,7 +1,10 @@
 from keys import keys_main
 from datetime import datetime
 from time import sleep
-from os import mkdir, path
+from os import path
+from file_dirs import get_db_dir, get_db_file
+from extra_functions import cleaner_screen, save_file, get_file
+from time import sleep
 import requests
 import subprocess
 
@@ -19,17 +22,12 @@ HEADERS = keys_main()
         'url': response['url']
     } """
 
-def get_dir(NAME_DIR: str):
-    if not path.exists(NAME_DIR):
-        mkdir(NAME_DIR)
-    return NAME_DIR
 
-
-DIR = get_dir('VODS')
-
+DIR = get_db_dir('vods')
+DB_FILE_NAME = get_db_file('vods')
 
 def save_vod(vod_url: str):
-    file_name = 'hola'
+    file_name = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     save_name = path.join(DIR, f'{file_name}.mp4')
     command = [
         'streamlink',
@@ -40,7 +38,7 @@ def save_vod(vod_url: str):
     ]
     try:
         subprocess.run(command, check=True)
-        print(f'VOD guardada con EXITO! en {file_name}')
+        print(f'VOD guardada con EXITO! en {save_name}')
     except subprocess.CalledProcessError as e:
         print(f'Error al guardar la VOD: {e.output}')
 
@@ -60,12 +58,25 @@ def get_channel_info(CHANNEL_NAME: str):
 def vod_main():
     CHANNEL_NAME = input('CHANNEL_NAME > ')
     CHANNEL_ID = get_channel_info(CHANNEL_NAME)
-    vods = get_vods(CHANNEL_ID)
-    for vod in vods:
-        print(f'GUARDANDO > {vod['url']} | {vod['duration']} | {datetime.now()}')
-        save_vod(vod['url'])
-        sleep(5)
-    return vods
+    while True:
+        try:
+            vods = get_vods(CHANNEL_ID)
+            print(f'VODS DISPONIBLES: {len(vods)}')
+            # sleep(60)
+            for n, vod in enumerate(vods):
+                if any([v['url'] == vod['url'] for v in get_file(DB_FILE_NAME)]):
+                    print(f'VOD YA GUARDADA > {vod["title"]}')
+                    sleep(30)
+                    continue
+                print(f'GUARDANDO > {vod['url']} | {vod['duration']} | {datetime.now().strftime("%H:%M:%S")} | {n+1}/{len(vods)}')
+                save_vod(vod['url'])
+                save_file(DB_FILE_NAME, [vod])
+                sleep(30)
+                cleaner_screen()
+            sleep(6 * 60 * 60)
+        except KeyboardInterrupt:
+            print('SALIDA')
+            break
     
 
 

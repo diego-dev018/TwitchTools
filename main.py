@@ -1,6 +1,6 @@
 from vod import vod_main
-from keys import keys_main
 from datetime import datetime
+from extra_functions import cleaner_screen
 
 
 def main():
@@ -23,4 +23,5 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
+        cleaner_screen()
         print(f'\nSALIDA: {datetime.now()}')

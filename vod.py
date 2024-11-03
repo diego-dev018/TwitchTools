@@ -2,13 +2,18 @@ from keys import keys_main
 from datetime import datetime
 from time import sleep
 from os import path
+from sys import exit
 from file_dirs import get_db_dir, get_db_file
 from extra_functions import cleaner_screen, save_file, get_file
 from time import sleep
 import requests
 import subprocess
 
-HEADERS = keys_main()
+try:
+    HEADERS = keys_main()
+except KeyboardInterrupt:
+    cleaner_screen()
+    exit()
 
 
 """ def get_vod_info(VOD_ID: str):

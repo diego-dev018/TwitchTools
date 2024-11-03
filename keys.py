@@ -1,6 +1,6 @@
 from os import path, remove
 from sys import exit
-from extra_functions import get_file as get_keys
+from extra_functions import get_file as get_keys, cleaner_screen
 from file_dirs import get_db_file
 import requests
 import pickle as pkl
@@ -10,6 +10,7 @@ name_file = get_db_file('keys')
 
 
 def save_keys():
+    print(f'{'-' * 5} CLAVES NO ENCONTRADAS {'-' * 5}')
     CLIENT_ID = input('CLIENT_ID (ID del CLIENTE) > ')
     SECRET_ID = input('SECRET_ID (CLAVE SECRETA) > ')
     with open(name_file, 'wb') as f:
@@ -31,23 +32,28 @@ def get_accestoken(CLIENT_ID: str, SECRET_ID: str):
     except KeyError:
         print('\nERROR EN LAS CLAVES. ESTAS SON INCORRECTAS O NO EXISTEN!')
         remove(name_file)
-        exit()
+        return None
 
 
 def get_headers(CLIENT_ID: str, CLIENT_SECRET: str):
     AUTORIZATION = get_accestoken(CLIENT_ID, CLIENT_SECRET)
-    return {
-        'Client-ID': CLIENT_ID,
-        'Authorization': f'Bearer {AUTORIZATION}'
-    }
+    if AUTORIZATION:
+        return {
+            'Client-ID': CLIENT_ID,
+            'Authorization': f'Bearer {AUTORIZATION}'
+        }
+    return None
 
 
 def keys_main():
-    if not path.exists(name_file):
-        keys = save_keys()
-    else:
-        keys = get_keys(name_file)
-    HEADERS = get_headers(keys['CLIENT_ID'], keys['SECRET_ID'])
+    HEADERS = None
+    while not HEADERS:
+        cleaner_screen()
+        if not path.exists(name_file):
+            keys = save_keys()
+        else:
+            keys = get_keys(name_file)
+        HEADERS = get_headers(keys['CLIENT_ID'], keys['SECRET_ID'])
     return HEADERS
     
 

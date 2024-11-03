@@ -10,6 +10,13 @@ def cleaner_screen():
 def get_file(name_file: str):
     with open(name_file, 'rb') as f:
         return load(f)
+    
+
+def intentar(argument):
+    try:
+        argument
+    except Exception:
+        pass
 
 
 def save_file(name_file: str, data: list):

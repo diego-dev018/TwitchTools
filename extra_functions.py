@@ -8,6 +8,8 @@ def cleaner_screen():
 
 
 def get_file(name_file: str):
+    if not path.exists(name_file):
+        return []
     with open(name_file, 'rb') as f:
         return load(f)
     

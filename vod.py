@@ -6,15 +6,9 @@ from sys import exit
 from file_dirs import get_db_dir, get_db_file
 from extra_functions import cleaner_screen, save_file, get_file
 from time import sleep
+from info import get_channel_info
 import requests
 import subprocess
-
-try:
-    HEADERS = keys_main()
-except KeyboardInterrupt:
-    cleaner_screen()
-    exit()
-
 
 """ def get_vod_info(VOD_ID: str):
     url = f'https://api.twitch.tv/helix/videos?id={VOD_ID}'
@@ -54,15 +48,11 @@ def get_vods(CHANNEL_ID: str):
     return response['data']
 
 
-def get_channel_info(CHANNEL_NAME: str):
-    url = f'https://api.twitch.tv/helix/users?login={CHANNEL_NAME}'
-    response = requests.get(url, headers=HEADERS).json()
-    return response['data'][0]['id']
-
-
 def vod_main():
+    global HEADERS
+    HEADERS = keys_main()
     CHANNEL_NAME = input('CHANNEL_NAME > ')
-    CHANNEL_ID = get_channel_info(CHANNEL_NAME)
+    CHANNEL_ID = get_channel_info(CHANNEL_NAME, HEADERS)
     while True:
         try:
             vods = get_vods(CHANNEL_ID)

@@ -4,6 +4,10 @@ from extra_functions import cleaner_screen
 
 
 def main():
+    cleaner_screen()
+    print("""\
+BIENVENIDO A TWITCH TOOLS
+""")
     options = [
         'GUARDAR VODS EN LOCAL',
         'EDITAR CLIPS'

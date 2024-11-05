@@ -38,17 +38,21 @@ def get_accestoken(CLIENT_ID: str, SECRET_ID: str):
 def get_headers(CLIENT_ID: str, CLIENT_SECRET: str):
     AUTORIZATION = get_accestoken(CLIENT_ID, CLIENT_SECRET)
     if AUTORIZATION:
-        return {
+        header = {
             'Client-ID': CLIENT_ID,
             'Authorization': f'Bearer {AUTORIZATION}'
         }
+        if NEW_TYPE:
+            header[NEW_TYPE[0]] = NEW_TYPE[1]
+        return header
     return None
 
 
-def keys_main():
+def keys_main(TYPE: list = None):
+    global NEW_TYPE
+    NEW_TYPE = TYPE
     HEADERS = None
     while not HEADERS:
-        cleaner_screen()
         if not path.exists(name_file):
             keys = save_keys()
         else:

@@ -10,7 +10,6 @@ Herramientas para Twitch usando su API
 
 ### Episodio 1
 - [x] Consiguiendo el CLIENT_ID y CLIENT_SECRET de Twitch
-- [x] 
 - [x] Crear un HEADER para el API de Twitch
 [text](https://www.youtube.com/watch?v=l6n7nVsqwuw)
 

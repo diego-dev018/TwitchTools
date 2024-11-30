@@ -1,9 +1,11 @@
 from pickle import load, dump
 from os import path
-from files_name import KEYS as FILENAME
 
 # load -> Traer la informacion del fichero .pkl
 # dumb -> Crea el fichero .pkl
+
+FILENAME = path.join('db', 'keys.pkl')
+
 
 def get_keys():
     with open(FILENAME, 'rb') as f:

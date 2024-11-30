@@ -1,8 +1,24 @@
 from manager_keys import get_keys_main
+from os import path
+from pickle import load, dump
 import requests
+
+FILENAME = path.join('db', 'header.pkl')
+
+
+def get_headers_from_file():
+    with open(FILENAME, 'rb') as f:
+        return load(f)
+    
+
+def save_headers(headers):
+    with open(FILENAME, 'wb') as f:
+        dump(headers, f)
 
 
 def get_headers():
+    if path.exists(FILENAME):
+        return get_headers_from_file()
     KEYS = get_keys_main()
     url = 'https://id.twitch.tv/oauth2/token'
     params = {
@@ -11,10 +27,12 @@ def get_headers():
         'grant_type': 'client_credentials'
     }
     access_token = requests.post(url, params=params).json()['access_token']
-    return {
+    header = {
         'Authorization': f'Bearer {access_token}',
         'Client-Id': KEYS['CLIENT_ID']
     }
+    save_headers(header)
+    return header
 
 
 if __name__ == '__main__':

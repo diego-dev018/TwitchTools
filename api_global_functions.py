@@ -1,5 +1,6 @@
 from requests import get
 from headers import get_headers as header
+from sys import exit
 
 HEADER = header()
 
@@ -11,7 +12,10 @@ def get_channel_data(channel_name: str):
 
 
 def get_channel_id(channel_name: str):
-    return get_channel_data(channel_name)['data'][0]['id']
+    try:
+        return get_channel_data(channel_name)['data'][0]['id']
+    except IndexError:
+        exit(f'¡{channel_name} NOT FOUND OR INVALID USERNAME!')
 
 
 if __name__ == '__main__':

@@ -1,42 +1,51 @@
 from requests import get
 from time import sleep
 from os import path
+from subprocess import call, run, DEVNULL
 from headers import get_headers as header
 from api_global_functions import get_channel_id
 from extra_functions import get_doc, save_doc
+from string import ascii_letters, digits
+from datetime import datetime
 
 HEADER = header()
 
 
-def download_vod(vod: dict):
-    url = vod['url']
-    response = get(url, headers=HEADER)
-    if response.status_code == 200:
-        data = response.json()
-        for d in data['data']:
-            download_url = d['url']
-            response = get(download_url)
-            if response.status_code == 200:
-                with open(f'vods/{vod["title"]}.mp4', 'wb') as f:
-                    f.write(response.content)
-                sleep(1)
-                return True
-            else:
-                print(f'Error downloading {vod["title"]}')
-                return False
-    else:
-        print(f'Error downloading {vod["title"]}')
+def download_vod(url: str, quality: str = 'best', output: str = 'vod.mp4'):
+    if call(["which", "streamlink"], stdout=DEVNULL, stderr=DEVNULL) != 0:
+        print('Streamlink is not installed, please install it with \'pip install streamlink\'')
         return False
+    try:
+        command = [
+            'streamlink',
+            url,
+            quality,
+            '-o',
+            output
+        ]
+        result = run(command, stdout=DEVNULL, stderr=DEVNULL, check=True)
+        if result.returncode == 0:
+            return True
+        else:
+            return False
+    except Exception as e:
+        return False
+    
 
 
 def download_vods(vods: list):
     for vod in vods:
-        title = vod['title']
-        print(f'Downloading {title}')
-        download_status = download_vod(vod)
+        title = vod['title'][:25] + f'_{datetime.now().strftime("%Y%m%d%H%M%S")}'
+        for t in title:
+            if t not in ascii_letters + digits + '_':
+                title = title.replace(t, '')
+        output = path.join('vods', f'{vod['user_login']}', f'{title}.mp4')
+        print(f'Downloading {vod['title'][:60]}... [Started]')
+        download_status = download_vod(vod['url'], output=output)
         if download_status == False:
-            print(f'Error downloading {title}')
+            print(f'Error downloading {vod['title'][:60]}, skipping... [Error]')
             continue
+        print(f'{vod['title'][:60]}... downloaded successfully [Finished]')
         save_doc(FILENAME, [vod])
 
 

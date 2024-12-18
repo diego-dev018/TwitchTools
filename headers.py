@@ -1,6 +1,7 @@
 from manager_keys import get_keys_main
-from os import path
+from os import path, remove
 from pickle import load, dump
+from sys import exit
 import requests
 
 FILENAME = path.join('db', 'header.pkl')
@@ -26,7 +27,12 @@ def get_headers():
         'client_secret': KEYS['SECRET_ID'],
         'grant_type': 'client_credentials'
     }
-    access_token = requests.post(url, params=params).json()['access_token']
+    try:
+        access_token = requests.post(url, params=params).json()['access_token']
+    except KeyError:
+        print('Error: Invalid keys -> Check your keys :(')
+        remove(path.join('db', 'keys.pkl'))
+        exit(-1)
     header = {
         'Authorization': f'Bearer {access_token}',
         'Client-Id': KEYS['CLIENT_ID']

@@ -1,6 +1,7 @@
-from extra_functions import make_db
+from extra_functions import make_db, clear
 from headers import get_headers
 from sys import exit
+from vods_automation import vods_automation as vods_auto
 
 
 def main():
@@ -15,8 +16,9 @@ def main():
     for i, option in enumerate(options):
         print(f'{i + 1}) {option}')
     selected = input('> ')
+    clear()
     if selected == '1':
-        pass
+        vods_auto()
     else:
         print('Invalid option')
         input('Press enter to continue')

@@ -1,5 +1,11 @@
-from os import path, mkdir
+from os import path, mkdir, system
 from json import load, dump
+from platform import system as platform
+
+
+def clear():
+    system('cls' if platform() == 'Windows' else 'clear')
+
 
 def make_db():
     if not path.exists('db'):
@@ -20,4 +26,5 @@ def save_doc(filename: str, data: dict):
 
 
 if __name__ == '__main__':
-    save_doc('test.json', [{'name': 'test3'}, {'name': 'test4'}])
+    # save_doc('test.json', [{'name': 'test3'}, {'name': 'test4'}])
+    clear()

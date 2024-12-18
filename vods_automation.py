@@ -6,12 +6,11 @@ from api_global_functions import get_channel_id
 from extra_functions import get_doc, save_doc
 
 HEADER = header()
-FILENAME = path.join('db', 'vods_saved.json')
 
 
 def download_vods(vods: list):
     for vod in vods:
-        save_doc(FILENAME, vod)
+        save_doc(FILENAME, [vod])
         input('Enter to continue...')
 
 
@@ -38,7 +37,9 @@ def get_vods(channel_id: int):
 
 
 def main():
+    global FILENAME
     channel = input('Enter the channel name: ')
+    FILENAME = path.join('db', f'{channel}_vods_saved.json')
     channel_id = get_channel_id(channel)
     vods = get_vods(channel_id)
     download_vods(vods)

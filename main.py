@@ -6,7 +6,6 @@ from vods_automation import vods_automation as vods_auto
 
 def main():
     make_db()
-    HEADER = get_headers()
     options = [
         'Vods automation',
     ]
